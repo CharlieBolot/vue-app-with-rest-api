@@ -20,8 +20,11 @@
     
                 
         <div id="app">
+          
             <label>Nom de l'entreprise : </label>
             <input v-model="info">
+            <button v-on:click="recherche" >valider</button>
+          
        
     
 
@@ -29,6 +32,8 @@
 
       
         <pre> {{ info }}</pre>
+        <pre> {{ tabrep }}</pre>
+      
       </div>
       
 
@@ -44,26 +49,35 @@ new Vue({
   el: '#app',
   data () {
     return {
-      info: null
+      info: null,
+      tabrep:{},
+     
     }
   },
+ /* trop lourd(
   mounted () {
+    var self=this;
     axios
       .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&rows=1000&sort=datederniertraitementetablissement")
+      //https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement=[this.info]
       .then(response => {
-            tabrep= [];
-            for(i=0; i<1000;i++){
-                tabrep[i] = response.data.records[i].fields
+            tabrep= {};
+            for(i=0; i<response.data.records.length;i++){
+              //if(self.info == response.data.records[i].fields.denominationusuelleetablissement){
+                //self.tabrep[i] = [response.data.records[i].fields.denominationusuelleetablissement,response.data.records[i].fields.adresseetablissement]
+                self.tabrep[i] = response.data.records[i].fields
+                
                
-                /* tabrep[i] =  response.data.records[i].fields.denominationusuelleetablissement
+                /* this.tabrep[i] =  response.data.records[i].fields.denominationusuelleetablissement
                 if(tabrep[i] == null){
-                    tabrep[i] =  response.data.records[i].fields.denominationunitelegale
+                    this.tabrep[i] =  response.data.records[i].fields.denominationunitelegale
                 }
                 if((tabrep[i] == null)){
-                    tabrep[i] =  response.data.records[i].fields.prenom1unitelegale +" "+ response.data.records[i].fields.nomunitelegale
-                } */
-
+                    this.tabrep[i] =  response.data.records[i].fields.prenom1unitelegale +" "+ response.data.records[i].fields.nomunitelegale
+                } *\/
+              
             }
+            
        
       })
       
@@ -72,16 +86,11 @@ new Vue({
   computed :{
     recherche:function ()
         {
+          //console.log(this.tabrep);
             rp = [];
             for(i=0; i<1000;i++){
                 if(response.data.records[i].fields.denominationusuelleetablissement == item.denominationusuelleetablissement){
                     rp[i] =  response.data.records[i].fields.adresseetablissement
-
-
-
-
-
-
 
             }
             return rp;
@@ -89,10 +98,27 @@ new Vue({
 
         }
     }
+    )
+  }*/
 
+
+  methods: {
+    
+    recherche:function ()
+    {
+      var self=this;
+      axios
+      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement="&self.info)
+      .then(response => {
+            tabrep= {};
+      for(i=0; i<response.data.records.length;i++){
+      self.tabrep[i] = response.data.records[i].fields
+      }
+    })
   }
+}
 })
-
+ 
 
 
 </script>
