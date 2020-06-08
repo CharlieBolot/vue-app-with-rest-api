@@ -19,13 +19,29 @@
     <!-- en travaux -->
     
                 
-        <div id="app">
-          
-            <label>Nom de l'entreprise : </label>
-            <input v-model="ent" @change="recherche()" >
-           
-        <pre> {{ ent }}</pre>
-        <pre> {{ tabrep }}</pre>
+        <div id="app" class="container">
+          <div class="form-group">
+            <div>
+              <img src="">
+            </div>
+            <div>
+              <input v-model="ent" class="form-control" placeholder="Nom de l'entreprise">
+              <button @click='recherche()' class="form-control btn btn-primary">valider</button>
+            </div>
+            <div class="container">
+              
+              <div v-for="entreprise in tabrep">
+
+                <h5>{{entreprise.unite}}</h5>
+                <p>{{entreprise.adresse}} {{entreprise.ville}}</p>
+                <p>{{entreprise.classe}}</p>
+                <p>{{entreprise.cat}} de {{entreprise.emp}}</p>
+                <p>Siren : {{entreprise.siren}}</p>
+              </div>
+              
+            </div>
+          </div>
+       
       
       </div>
       
@@ -52,15 +68,28 @@ new Vue({
     {
       var self=this;
       axios
-      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&rows=10&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement="+self.ent)
-     
+      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q="+self.ent+"&rows=10&sort=datederniertraitementetablissement")
+    // .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&rows=10&start=1&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement=fleurametz")
       .then(response => {
-            tabrep= {};
-      for(i=0; i<response.data.records.length;i++){
+            //tabrep= {};
+      /* for(i=0; i<response.data.records.length;i++){
         if(response.data.records[i].fields.denominationusuelleetablissement != self.ent){
           self.tabrep[i] = [response.data.records[i].fields.denominationusuelleetablissement,response.data.records[i].fields.adresseetablissement,response.data.records[i].fields.libellecommuneetablissement,response.data.records[i].fields.trancheeffectifsunitelegale]}
-          
-      }
+           */
+
+           self.tabrep = response.data.records.map(e => {
+             let entreprise = {}
+             
+             entreprise.unite = e.fields.denominationunitelegale
+             entreprise.adresse = e.fields.adresseetablissement
+             entreprise.ville = e.fields.libellecommuneetablissement
+             entreprise.classe = e.fields.classeetablissement
+             entreprise.emp = e.fields.trancheeffectifsunitelegale
+             entreprise.siren = e.fields.siren
+             entreprise.cat = e.fields.categorieentreprise
+             return entreprise
+            })
+      //}
       
     })
   }
