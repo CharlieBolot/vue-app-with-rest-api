@@ -22,16 +22,9 @@
         <div id="app">
           
             <label>Nom de l'entreprise : </label>
-            <input @change="recherche" v-model="info">
+            <input v-model="ent" @change="recherche()" >
            
-          
-       
-    
-
- 
-
-      
-       
+        <pre> {{ ent }}</pre>
         <pre> {{ tabrep }}</pre>
       
       </div>
@@ -43,19 +36,15 @@
 
 <script>
 
-
-
 new Vue({
   el: '#app',
   data () {
     return {
-      info: null,
+      ent: null,
       tabrep:{},
      
     }
   },
-
-
 
   methods: {
     
@@ -63,12 +52,14 @@ new Vue({
     {
       var self=this;
       axios
-      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement="+self.info)
+      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&rows=10&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement="+self.ent)
      
       .then(response => {
             tabrep= {};
       for(i=0; i<response.data.records.length;i++){
-      self.tabrep[i] = [response.data.records[i].fields.denominationusuelleetablissement,response.data.records[i].fields.adresseetablissement]
+        if(response.data.records[i].fields.denominationusuelleetablissement != self.ent){
+          self.tabrep[i] = [response.data.records[i].fields.denominationusuelleetablissement,response.data.records[i].fields.adresseetablissement,response.data.records[i].fields.libellecommuneetablissement,response.data.records[i].fields.trancheeffectifsunitelegale]}
+          
       }
       
     })
@@ -76,8 +67,6 @@ new Vue({
 }
 })
  
-
-
 </script>
 </body>
 </html>
