@@ -22,8 +22,8 @@
         <div id="app">
           
             <label>Nom de l'entreprise : </label>
-            <input v-model="info">
-            <button v-on:click="recherche" >valider</button>
+            <input @change="recherche" v-model="info">
+           
           
        
     
@@ -31,7 +31,7 @@
  
 
       
-        <pre> {{ info }}</pre>
+       
         <pre> {{ tabrep }}</pre>
       
       </div>
@@ -63,12 +63,12 @@ new Vue({
     {
       var self=this;
       axios
-      //.get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement="+self.info)
-      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement=Fleurametz")
+      .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement="+self.info)
+     
       .then(response => {
             tabrep= {};
       for(i=0; i<response.data.records.length;i++){
-      self.tabrep[i] = response.data.records[i].fields
+      self.tabrep[i] = [response.data.records[i].fields.denominationusuelleetablissement,response.data.records[i].fields.adresseetablissement]
       }
       
     })
