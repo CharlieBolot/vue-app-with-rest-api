@@ -8,48 +8,44 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <style> /** a modifier **/
- 
-
+    <style> /** a modifier ? **/
     </style>
 
 </head>
-<body>
-
-    <!-- en travaux -->
-    
+<body>    
                 
-        <div id="app" class="container">
-          <div class="form-group">
-            <div>
-              <img src="">
-            </div>
-            <div>
-              <input v-model="ent" class="form-control" placeholder="Nom de l'entreprise">
-              <button @click='recherche()' class="form-control btn btn-primary">valider</button>
-            </div>
-            <div class="container">
-              
-              <div v-for="entreprise in tabrep">
+        <div id="app" >
+          <div class="container" >
+            <div class="form-group">
 
-                <h5>{{entreprise.unite}}</h5>
-                <p>{{entreprise.adresse}} {{entreprise.ville}}</p>
-                <p>{{entreprise.classe}}</p>
-                <p>{{entreprise.cat}} de {{entreprise.emp}}</p>
-                <p>Siren : {{entreprise.siren}}</p>
+              <div class="col-sm-12 col-md-6-offset-3  col-lg-4-offset-4 text-center mt-2"> 
+                <h3>InfoEntreprise </h3>
+                <h3>Region Nantaise</h3>
               </div>
-              
+
+              <div class="col-sm-12 col-md-6-offset-3 col-lg-4-offset-4 mt-3">
+                <input v-model="ent" class="form-control" placeholder="Nom de l'entreprise">
+                <button @click='recherche()' class="form-control btn btn-primary">valider</button>
+              </div>
             </div>
-          </div>
-       
-      
+              <div class="row">
+
+                <div v-for="entreprise in tabrep" class="col-sm-12 col-md-6 col-lg-4 mt-3" style="border: 1px solid; border-radius: 5%;" >
+
+                  <h5 class="mt-3">{{entreprise.unite}}</h5>
+                  <p>{{entreprise.adresse}} {{entreprise.ville}}</p>
+                  <p>{{entreprise.classe}}</p>
+                  <p>{{entreprise.cat}} {{entreprise.emp}}</p>
+                  <p>Siren : {{entreprise.siren}}</p>
+                </div>
+
+              </div>
+            </div>
+          
       </div>
-      
-
-
+  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 <script>
 
 new Vue({
@@ -61,7 +57,6 @@ new Vue({
      
     }
   },
-
   methods: {
     
     recherche:function ()
@@ -69,15 +64,9 @@ new Vue({
       var self=this;
       axios
       .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q="+self.ent+"&rows=10&sort=datederniertraitementetablissement")
-    // .get("https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_base-sirene-entreprises-nantes-metropole&q=&rows=10&start=1&sort=datederniertraitementetablissement&facet=statutdiffusionetablissement&refine.statutdiffusionetablissement.denominationusuelleetablissement=fleurametz")
+   
       .then(response => {
-            //tabrep= {};
-      /* for(i=0; i<response.data.records.length;i++){
-        if(response.data.records[i].fields.denominationusuelleetablissement != self.ent){
-          self.tabrep[i] = [response.data.records[i].fields.denominationusuelleetablissement,response.data.records[i].fields.adresseetablissement,response.data.records[i].fields.libellecommuneetablissement,response.data.records[i].fields.trancheeffectifsunitelegale]}
-           */
-
-           self.tabrep = response.data.records.map(e => {
+             self.tabrep = response.data.records.map(e => {
              let entreprise = {}
              
              entreprise.unite = e.fields.denominationunitelegale
@@ -88,14 +77,11 @@ new Vue({
              entreprise.siren = e.fields.siren
              entreprise.cat = e.fields.categorieentreprise
              return entreprise
-            })
-      //}
-      
+            })      
     })
   }
 }
 })
- 
 </script>
 </body>
 </html>
